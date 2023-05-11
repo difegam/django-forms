@@ -4,7 +4,8 @@
 {% endblock title %}
 {% block content %}
     <section id="reviews">
-        <form action="">
+        <form action=" {% url 'reviews:index' %}" method="POST">
+            {% csrf_token %}
             <label for="username">username</label>
             <input type="text" name="username" id="username">
             <button>Send</button>

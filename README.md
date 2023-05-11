@@ -17,13 +17,13 @@ Before using the code in this repository, you should have a working installation
 To use the code in this repository, simply clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/difegam/book-store.git
+git clone https://github.com/difegam/django-forms.git
 ```
 
 Then, navigate to the cloned directory and install the required dependencies:
 
 ```bash
-cd book-store
+cd django-forms
 poetry install
 ```
 
