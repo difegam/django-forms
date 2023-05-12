@@ -6,8 +6,7 @@
     <section id="reviews">
         <form action=" {% url 'reviews:index' %}" method="POST">
             {% csrf_token %}
-            <label for="username">username</label>
-            <input type="text" name="username" id="username">
+            {{ form }}
             <button>Send</button>
         </form>
     </section>
