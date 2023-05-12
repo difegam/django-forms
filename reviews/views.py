@@ -3,19 +3,25 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import ReviewForm
-from .models import Review
 
 
 # Create your views here.
 def review(request):
 
     if request.method == "POST":
+
+        #** Update operation using ModelForm
+        #* existing_review = Review.objects.get(pk=1) # Get Obj
+        #* form = ReviewForm(request.POST, instance=existing_review) # Populate with existing data
+
         form = ReviewForm(request.POST)
         if form.is_valid():
-            print(type(form.cleaned_data), form.cleaned_data)
-            review_obj = Review(**form.cleaned_data)
-            print(review_obj)
-            review_obj.save()
+            #* Using form.Form
+            # review_obj = Review(**form.cleaned_data)
+            # review_obj.save()
+
+            #* Using form.ModelForm
+            form.save()
             return HttpResponseRedirect(reverse("reviews:thank-you-page"))
     else:
         form = ReviewForm()
