@@ -6,7 +6,13 @@
     <section id="reviews">
         <form action=" {% url 'reviews:index' %}" method="POST">
             {% csrf_token %}
-            {{ form }}
+            {% for field in form %}
+                <div class="form-control{% if not field.errors %} errors{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
             <button>Send</button>
         </form>
     </section>

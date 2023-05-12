@@ -1,15 +1,4 @@
-import datetime
-
 from django import forms
-
-email_setup = {
-    "label": "email",
-    "max_length": 100,
-    "error_messages": {
-        "required": "email must not be empty",
-        "max_length": "Please enter a valid email"
-    }
-}
 
 
 class ReviewForm(forms.Form):
@@ -20,5 +9,7 @@ class ReviewForm(forms.Form):
                                     "max_length": "Please enter a shorter username"
                                 },
                                 widget=forms.TextInput(attrs={"placeholder": "Username"}))
-    email = forms.EmailField(**email_setup)
-    day = forms.DateField(initial=datetime.date.today)
+    review_text = forms.CharField(label="review",
+                                  max_length=200,
+                                  widget=forms.Textarea(attrs={"placeholder": "Type your message here"}))
+    rating = forms.IntegerField(label="Your Rating", min_value=1, max_value=5)
