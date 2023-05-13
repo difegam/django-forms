@@ -1,11 +1,31 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views import View
 
 from .forms import ReviewForm
 
 
-# Create your views here.
+# DJango Class base views
+# https://docs.djangoproject.com/en/4.2/topics/class-based-views/
+class ReviewView(View):
+
+    def get(self, request):
+        form = ReviewForm()
+        return self.render_view(request, form)
+
+    def post(self, request):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("reviews:thank-you-page"))
+        return self.render_view(request, form)
+
+    def render_view(self, request, form):
+        return render(request, template_name="reviews/review.html", context={"form": form})
+
+# django function based views
+# https://docs.djangoproject.com/en/4.1/topics/http/views/
 def review(request):
 
     if request.method == "POST":
