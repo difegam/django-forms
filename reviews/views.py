@@ -1,9 +1,13 @@
+from typing import Any
+
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
+from django.views.generic.base import TemplateView
 
 from .forms import ReviewForm
+from .models import Review
 
 
 # DJango Class base views
@@ -24,30 +28,35 @@ class ReviewView(View):
     def render_view(self, request, form):
         return render(request, template_name="reviews/review.html", context={"form": form})
 
-# django function based views
-# https://docs.djangoproject.com/en/4.1/topics/http/views/
-def review(request):
 
-    if request.method == "POST":
-
-        #** Update operation using ModelForm
-        #* existing_review = Review.objects.get(pk=1) # Get Obj
-        #* form = ReviewForm(request.POST, instance=existing_review) # Populate with existing data
-
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            #* Using form.Form
-            # review_obj = Review(**form.cleaned_data)
-            # review_obj.save()
-
-            #* Using form.ModelForm
-            form.save()
-            return HttpResponseRedirect(reverse("reviews:thank-you-page"))
-    else:
-        form = ReviewForm()
-
-    return render(request, template_name="reviews/review.html", context={"form": form})
+# class ThankYouView(View):
+#     def get(self, request, *args, **kwargs):
+#         return render(request, template_name="reviews/thank_you.html", context={})
 
 
-def thank_you(request):
-    return render(request, template_name="reviews/thank_you.html", context={})
+class ThankYouView(TemplateView):
+    template_name = "reviews/thank_you.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["message"] = "This Works!"
+        return context
+
+
+class ReviewListView(TemplateView):
+    template_name = "reviews/review_list.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["reviews"] = Review.objects.all()
+        return context
+
+
+class SingleReviewView(TemplateView):
+    template_name = "reviews/review_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        review_id = kwargs.get("id", 0)
+        context["review"] = get_object_or_404(Review, pk=review_id)
+        return context
