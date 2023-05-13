@@ -9,5 +9,5 @@ urlpatterns = [
     # path("", views.review, name="index"),
     path("thank-you", views.ThankYouView.as_view(), name="thank-you-page"),
     path("reviews", views.ReviewListView.as_view(), name="reviews"),
-    path("reviews/<int:id>", views.SingleReviewView.as_view(), name="review-detail"),
+    path("reviews/<int:pk>", views.ReviewDetailView.as_view(), name="review-detail"),
 ]

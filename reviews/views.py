@@ -1,9 +1,11 @@
 from typing import Any
 
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
+from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 
 from .forms import ReviewForm
@@ -43,20 +45,16 @@ class ThankYouView(TemplateView):
         return context
 
 
-class ReviewListView(TemplateView):
+class ReviewListView(ListView):
     template_name = "reviews/review_list.html"
+    model = Review
+    context_object_name = "reviews"
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context["reviews"] = Review.objects.all()
-        return context
+    def get_queryset(self) -> QuerySet[Any]:
+        base_query = super().get_queryset()
+        return base_query.filter(rating__gt=2)
 
 
-class SingleReviewView(TemplateView):
+class ReviewDetailView(DetailView):
     template_name = "reviews/review_detail.html"
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        review_id = kwargs.get("id", 0)
-        context["review"] = get_object_or_404(Review, pk=review_id)
-        return context
+    model = Review
