@@ -1,9 +1,8 @@
 from typing import Any
 
 from django.db.models.query import QuerySet
-from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView, UpdateView)
 from django.views.generic.base import TemplateView
 
 from .forms import ReviewForm
@@ -12,16 +11,19 @@ from .models import Review
 
 # DJango Class base views
 # https://docs.djangoproject.com/en/4.2/topics/class-based-views/
-class ReviewView(FormView):
+class ReviewView(CreateView):
+    model = Review
     form_class = ReviewForm
     template_name = "reviews/review.html"
     success_url = reverse_lazy("reviews:thank-you-page")
 
-    def form_valid(self, form: Any) -> HttpResponse:
-        form.save()
-        return super().form_valid(form)
+    # # FormView
+    # def form_valid(self, form: Any) -> HttpResponse:
+    #     form.save()
+    #     return super().form_valid(form)
 
 
+#     view
 #     def get(self, request):
 #         form = ReviewForm()
 #         return self.render_view(request, form)
@@ -41,6 +43,19 @@ class ReviewView(FormView):
 #         return render(request, template_name="reviews/thank_you.html", context={})
 
 
+class ReviewUpdateView(UpdateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = "reviews/review.html"
+    success_url = reverse_lazy("reviews:thank-you-page")
+    template_name_suffix = "_update_form"
+
+
+class ReviewDeleteView(DeleteView):
+    model = Review
+    success_url = reverse_lazy("reviews:reviews")
+
+
 class ThankYouView(TemplateView):
     template_name = "reviews/thank_you.html"
 
@@ -57,7 +72,7 @@ class ReviewListView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         base_query = super().get_queryset()
-        return base_query.filter(rating__gt=2)
+        return base_query.filter(rating__gt=0)
 
 
 class ReviewDetailView(DetailView):
